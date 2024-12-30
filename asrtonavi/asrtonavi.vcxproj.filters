@@ -20,9 +20,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="immediate2d (2).h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="immediate2d.h">
       <Filter>File di origine</Filter>
     </ClInclude>

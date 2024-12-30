@@ -9,6 +9,8 @@
 #include "immediate2d.h"
 using namespace std;
 
+// Immagine sfondo
+static constexpr const char sfondopng[] = "immaginesfondo.png";
 // Immagine dell'astronave
 static constexpr const char astronavepng[] = "immagineastronave.PNG";
 // Immagine meteorite piccolo
@@ -23,6 +25,9 @@ struct Asteroide {
 };
 
 void run() {
+    // Imposto immagine sfondo
+    const Image sfondo = LoadImage(sfondopng);
+
     // Coordinate iniziali dell'astronave
     int x = 150;
     int y = 100;
@@ -38,7 +43,7 @@ void run() {
     // Variabile per tenere il ciclo in esecuzione
     bool esecuzione = true;
 
-    //per memorizzare gli asteroidi
+    // Per memorizzare gli asteroidi
     vector<Asteroide> asteroidi;
     srand(time(0)); // Inizializza il generatore di numeri casuali
 
@@ -62,17 +67,15 @@ void run() {
         // Cancella lo schermo precedente
         Clear(Black);
 
-        // Aggiorna e disegna gli asteroidi
-          // crea gli asteroidi alle loro coordinate
-        for (auto& asteroide : asteroidi) {
-            // Velocità di discesa
-            asteroide.y += 1;
-            //disegna immagine nuovi asteroidi
-            DrawImage(asteroide.x, asteroide.y, asteroide.img);
-			//perche se no scende troppo velocemente
-            Wait(10);
-        }
+        // Disegna l'immagine di sfondo
+        DrawImage(0, 0, sfondo);
 
+        // Aggiorna e disegna gli asteroidi
+        for (auto& asteroide : asteroidi) {
+            asteroide.y += 1; // Velocità di discesa
+            DrawImage(asteroide.x, asteroide.y, asteroide.img);
+            Wait(10); // Perché se no scende troppo velocemente
+        }
 
         // Disegna l'immagine dell'astronave alle nuove coordinate
         DrawImage(x, y, astronave);
@@ -82,18 +85,17 @@ void run() {
 
         // Controlla se l'astronave è uscita dai limiti dello schermo
         if (x < 0 || x >= IMM2D_WIDTH || y < 0 || y >= IMM2D_HEIGHT) {
-
             // Fine del gioco
-            esecuzione = false; 
+            esecuzione = false;
 
             // Cancella lo schermo
-            Clear(Black); 
+            Clear(Black);
 
             // Scrive "Hai perso"
-            DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 2, "Hai perso", "Arial", 24, Red, true); 
+            DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 2, "Hai perso", "Arial", 24, Red, true);
 
-            // stampa il messaggio
-            Present(); 
+            // Stampa il messaggio
+            Present();
         }
 
         // Rimuovi gli asteroidi che sono usciti dallo schermo

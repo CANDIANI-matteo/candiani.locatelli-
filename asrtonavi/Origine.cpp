@@ -25,13 +25,41 @@ Image asteroidiImg[100];
 bool asteroidiGrandi[100];
 int numeroAsteroidi = 0;
 
+void Menu() {
+    while (true) {
+        // Cancella lo schermo con il colore nero
+        Clear(Black);
+
+        // Disegna i messaggi del menu principale
+        DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT /3, "Benvenuto nel Gioco!", "Arial", 24, White, true);
+        DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT  /2, "Premi spazio per iniziare", "Arial", 18, White, true);
+
+        // Presenta il contenuto sullo schermo
+        Present();
+
+        //Spazio per iniziare a giocare
+        const char key = LastKey();
+        if (key==' ') {
+            Wait(500); // Breve pausa per evitare input multipli
+            break; // Esci dal menu principale
+        }
+
+        Wait(10); // Riduce il consumo di CPU
+    }
+}
 void run() {
+
+    Menu();
     // Imposto immagine sfondo
     const Image sfondo = LoadImage(sfondopng);
 
     // Coordinate iniziali dell'astronave
     int x = 150;
     int y = 100;
+
+    // Coordinate iniziali del proiettile (-1 indica che il proiettile non esiste)
+    int px = -1;
+    int py = -1;
 
     // Carica le immagini dell'astronave e dei meteoriti
     const Image astronave = LoadImage(astronavepng);
@@ -65,6 +93,21 @@ void run() {
         if (key == Up) y = y - 5;
         if (key == Down) y = y + 5;
 
+        // Spara un proiettile con il tasto spazio
+        if (key == ' ' && py < 0) {
+            px = x + 12;  // Parte dal centro dell'astronave
+            py = y - 10;  // Leggermente sopra la posizione dell'astronave
+        }
+
+        // Muove il proiettile verso l'alto
+        if (py >= 0) py -= 5;
+
+        // Cancella il proiettile quando esce dallo schermo
+        if (py < 0) {
+            px = -1;
+            py = -1;
+        }
+
         // Cancella lo schermo precedente
         Clear(Black);
 
@@ -85,6 +128,14 @@ void run() {
 
         // Disegna l'immagine dell'astronave alle nuove coordinate
         DrawImage(x, y, astronave);
+
+        //Immagine proiettili
+        const Image proiettileImg = LoadImage("unnamed.png");
+
+         // Disegna il proiettile se è attivo
+         if (py >= 0) {
+             DrawImage(px, py, proiettileImg); // Disegna l'immagine
+         }
 
         // Controlla se l'astronave è uscita dai limiti dello schermo
         if (x < 0 || x >= IMM2D_WIDTH || y < 0 || y >= IMM2D_HEIGHT) {

@@ -47,6 +47,8 @@ void run() {
     srand(time(0)); // Inizializza il generatore di numeri casuali
 
     while (esecuzione) {
+
+
         // Genera nuovi asteroidi casualmente
         if (rand() % 30 == 0 && numeroAsteroidi < 100) {
             asteroidiX[numeroAsteroidi] = rand() % IMM2D_WIDTH;
@@ -78,7 +80,7 @@ void run() {
             else {
                 DrawImage(asteroidiX[i], asteroidiY[i], asteroidiImg[i]); // Dimensione ridotta per meteoriti piccoli
             }
-            Wait(10); // Perché se no scendono troppo velocemente
+            Wait(3); // Perché se no scendono troppo velocemente
         }
 
         // Disegna l'immagine dell'astronave alle nuove coordinate
@@ -93,7 +95,7 @@ void run() {
             Clear(Black);
 
             // Scrive "Hai perso"
-            DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 2, "Hai perso", "Arial", 24, Red, true);
+            DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 2, "GAME OVER", "Arial", 24, Red, true);
 
             // Stampa il messaggio
             Present();
@@ -110,7 +112,7 @@ void run() {
                 Clear(Black);
 
                 // Scrive "Hai perso"
-                DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 2, "Hai perso", "Arial", 24, Red, true);
+                DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 2, "GAME OVER", "Arial", 24, Red, true);
 
                 // Stampa il messaggio
                 Present();
@@ -133,4 +135,15 @@ void run() {
         }
         numeroAsteroidi = nuovoNumeroAsteroidi;
     }
+
+
+
 }
+
+int main() {
+    // Esegui il gioco
+    run();
+    return 0;
+}
+
+

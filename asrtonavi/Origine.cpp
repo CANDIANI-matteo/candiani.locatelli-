@@ -105,7 +105,7 @@ void run() {
         }
 
         // Muove il proiettile verso l'alto
-        if (py >= 0) py -= 5;
+        if (py >= 0) py -= 4;
 
         //Cancella il proiettile quando esce dallo schermo
         if (px < 0 || py < 0 || px >= IMM2D_WIDTH || py >= IMM2D_HEIGHT) {
@@ -113,12 +113,13 @@ void run() {
             py = -1;
         }
 
+        
         // Gestisci la collisione del proiettile con gli asteroidi
         for (int i = 0; i < numeroAsteroidi; i++) {
             if (px != -1 && py != -1) { // Se il proiettile è attivo
                 int dimensioneAsteroide;
 
-                // Determina la dimensione dell'asteroide in modo esplicito
+                // Determina la dimensione dell'asteroide
                 if (asteroidiGrandi[i]) {
                     dimensioneAsteroide = 20; // Asteroide grande
                 }
@@ -126,16 +127,17 @@ void run() {
                     dimensioneAsteroide = 10; // Asteroide piccolo
                 }
 
-                // Controllo della collisione tra proiettile e asteroide
-                if (px < asteroidiX[i] + dimensioneAsteroide && px + 5 > asteroidiX[i] &&
-                    py < asteroidiY[i] + dimensioneAsteroide && py + 5 > asteroidiY[i]) {
+                const int tolleranza = 3;  // Un margine di errore per rendere la collisione più permissiva
+
+                // Controllo della collisione tra proiettile e asteroide con tolleranza
+                if (px < asteroidiX[i] + dimensioneAsteroide + tolleranza && px + 5 > asteroidiX[i] - tolleranza &&
+                    py < asteroidiY[i] + dimensioneAsteroide + tolleranza && py + 5 > asteroidiY[i] - tolleranza) {
 
                     // Incrementa i colpi ricevuti
                     colpiRicevuti[i]++;
 
-                    // Determina il numero di colpi necessari per distruggere l'asteroide in modo esplicito
+                    // Determina il numero di colpi necessari per distruggere l'asteroide
                     int colpiNecessari;
-                 
                     if (asteroidiGrandi[i]) {
                         colpiNecessari = 2; // Due colpi per un asteroide grande
                     }
@@ -143,15 +145,16 @@ void run() {
                         colpiNecessari = 1; // Un colpo per un asteroide piccolo
                     }
 
+                    // Se l'asteroide ha ricevuto il numero di colpi necessari
+                    if (colpiRicevuti[i] >= colpiNecessari) {
+                        // Distruggi l'asteroide
+                        asteroidiY[i] = IMM2D_HEIGHT + 1; // mandi fuori dallo schermo
+                        colpiRicevuti[i] = 0; // Resetta i colpi ricevuti
+                    }
+
                     // Disattiva il proiettile per evitare più collisioni
                     px = -1;
                     py = -1;
-                    
-                    if (colpiRicevuti[i] == colpiNecessari) {
-                        // Rimuove l'asteroide spingendolo fuori dallo schermo
-                        asteroidiY[i] = IMM2D_HEIGHT + 1;
-                    }
-
                 }
             }
         }

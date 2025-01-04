@@ -24,6 +24,9 @@ int asteroidiY[100];
 Image asteroidiImg[100];
 bool asteroidiGrandi[100];
 int numeroAsteroidi = 0;
+int viteAsteroidi[100];
+// Aggiungi un array per tenere traccia dei colpi ricevuti da ciascun asteroide
+int colpiRicevuti[100] = { 0 }; // Inizializza a zero
 
 void Menu() {
     while (true) {
@@ -83,6 +86,8 @@ void run() {
             asteroidiY[numeroAsteroidi] = 0;
             asteroidiGrandi[numeroAsteroidi] = rand() % 2 == 0;
             asteroidiImg[numeroAsteroidi] = asteroidiGrandi[numeroAsteroidi] ? meteoritegrande : meteoritepiccolo;
+            viteAsteroidi[numeroAsteroidi] = asteroidiGrandi[numeroAsteroidi] ? 100 : 50;
+            colpiRicevuti[numeroAsteroidi] = 0; // Inizializza i colpi ricevuti
             numeroAsteroidi++;
         }
 
@@ -102,10 +107,53 @@ void run() {
         // Muove il proiettile verso l'alto
         if (py >= 0) py -= 5;
 
-        // Cancella il proiettile quando esce dallo schermo
-        if (py < 0) {
+        //Cancella il proiettile quando esce dallo schermo
+        if (px < 0 || py < 0 || px >= IMM2D_WIDTH || py >= IMM2D_HEIGHT) {
             px = -1;
             py = -1;
+        }
+
+        // Gestisci la collisione del proiettile con gli asteroidi
+        for (int i = 0; i < numeroAsteroidi; i++) {
+            if (px != -1 && py != -1) { // Se il proiettile è attivo
+                int dimensioneAsteroide;
+
+                // Determina la dimensione dell'asteroide in modo esplicito
+                if (asteroidiGrandi[i]) {
+                    dimensioneAsteroide = 20; // Asteroide grande
+                }
+                else {
+                    dimensioneAsteroide = 10; // Asteroide piccolo
+                }
+
+                // Controllo della collisione tra proiettile e asteroide
+                if (px < asteroidiX[i] + dimensioneAsteroide && px + 5 > asteroidiX[i] &&
+                    py < asteroidiY[i] + dimensioneAsteroide && py + 5 > asteroidiY[i]) {
+
+                    // Incrementa i colpi ricevuti
+                    colpiRicevuti[i]++;
+
+                    // Determina il numero di colpi necessari per distruggere l'asteroide in modo esplicito
+                    int colpiNecessari;
+                 
+                    if (asteroidiGrandi[i]) {
+                        colpiNecessari = 2; // Due colpi per un asteroide grande
+                    }
+                    else {
+                        colpiNecessari = 1; // Un colpo per un asteroide piccolo
+                    }
+
+                    // Disattiva il proiettile per evitare più collisioni
+                    px = -1;
+                    py = -1;
+                    
+                    if (colpiRicevuti[i] == colpiNecessari) {
+                        // Rimuove l'asteroide spingendolo fuori dallo schermo
+                        asteroidiY[i] = IMM2D_HEIGHT + 1;
+                    }
+
+                }
+            }
         }
 
         // Cancella lo schermo precedente
@@ -113,6 +161,7 @@ void run() {
 
         // Disegna l'immagine di sfondo
         DrawImage(0, 0, sfondo);
+
 
         // Aggiorna e disegna gli asteroidi
         for (int i = 0; i < numeroAsteroidi; i++) {
@@ -132,10 +181,12 @@ void run() {
         //Immagine proiettili
         const Image proiettileImg = LoadImage("unnamed.png");
 
-         // Disegna il proiettile se è attivo
-         if (py >= 0) {
-             DrawImage(px, py, proiettileImg); // Disegna l'immagine
-         }
+        // Disegna il proiettile se è attivo
+        if (py >= 0) {
+            DrawImage(px, py, proiettileImg); // Disegna l'immagine
+        }
+
+       
 
         // Controlla se l'astronave è uscita dai limiti dello schermo
         if (x < 0 || x >= IMM2D_WIDTH || y < 0 || y >= IMM2D_HEIGHT) {
@@ -186,9 +237,6 @@ void run() {
         }
         numeroAsteroidi = nuovoNumeroAsteroidi;
     }
-
-
-
 }
 
 int main() {

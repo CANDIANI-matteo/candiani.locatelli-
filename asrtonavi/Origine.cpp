@@ -81,8 +81,6 @@ void run() {
     // Imposto immagine sfondo
     const Image sfondo = LoadImage(sfondopng);
 
-    
-
     // Coordinate iniziali dell'astronave
     int x = 150;
     int y = 100;
@@ -181,7 +179,7 @@ void run() {
                     // Se l'asteroide ha ricevuto il numero di colpi necessari
                     if (colpiRicevuti[i] >= colpiNecessari) {
                         // Distruggi l'asteroide
-                        asteroidiY[i] = IMM2D_HEIGHT + 1; // mandi fuori dallo schermo
+                        asteroidiY[i] = IMM2D_HEIGHT + 1; // Mandi fuori dallo schermo
                         colpiRicevuti[i] = 0; // Resetta i colpi ricevuti
                         if (asteroidiGrandi[i]) {
                             punti += 2;  // Se l'asteroide è grande, assegna 2 punti
@@ -230,7 +228,7 @@ void run() {
 
         //Uso c_str coverte la stringa in una array di caratteri
 
-        // Disegna i comandi nell'angolo in basso a destra
+        // Disegna i comandi nell'angolo in basso al centro
         string comandi = "P - Pausa | Spazio - Sparare | Freccette - Movimento";
         DrawString(IMM2D_WIDTH - 150, IMM2D_HEIGHT - 20, comandi.c_str(), "Arial",8, White, true);
 
@@ -242,8 +240,6 @@ void run() {
 
         //Dichiarazione e inizializzazione
         string gameOver = "GAME OVER";
-
-       
 
         // Controlla se l'astronave è uscita dai limiti dello schermo
         if (x < 0 || x >= IMM2D_WIDTH || y < 0 || y >= IMM2D_HEIGHT) {

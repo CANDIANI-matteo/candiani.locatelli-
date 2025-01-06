@@ -27,38 +27,61 @@ int numeroAsteroidi = 0;
 int viteAsteroidi[100];
 // Aggiungi un array per tenere traccia dei colpi ricevuti da ciascun asteroide
 int colpiRicevuti[100] = { 0 }; // Inizializza a zero
-// Variabile per gestire il tempo tra i colpi
-int timerSparo = 0;
-const int intervalloMinimoSparo = 5;  // Valore per regolare la frequenza di sparo
+
 int punti = 0; // Variabile per il punteggio
 
 void Menu() {
     while (true) {
-        // Cancella lo schermo con il colore nero
-        Clear(Black);
+
+        const Image menu = LoadImage("sfondoHome.jpg");
+
+        // Disegna l'immagine di sfondo del menu
+        DrawImage(0, 0, menu);
 
         // Disegna i messaggi del menu principale
-        DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT /3, "Benvenuto nel Gioco!", "Arial", 24, White, true);
-        DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT  /2, "Premi spazio per iniziare", "Arial", 18, White, true);
+        DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT /3, "Benvenuto nel Gioco!", "Arial", 24, Magenta, true);
+        DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT  /2, "Premi spazio per iniziare", "Arial", 18, Magenta, true);
 
         // Presenta il contenuto sullo schermo
         Present();
 
+
         //Spazio per iniziare a giocare
         const char key = LastKey();
         if (key==' ') {
-            Wait(500); // Breve pausa per evitare input multipli
+            Wait(5); // Breve pausa per evitare input multipli
             break; // Esci dal menu principale
         }
 
         Wait(10); // Riduce il consumo di CPU
     }
 }
+void Pause(){
+
+    bool pausa = true; // Imposta inizialmente il gioco in pausa
+    // Imposto immagine sfondo
+    const Image sfondo = LoadImage(sfondopng);
+
+    DrawImage(0, 0, sfondo);
+
+    DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 3, "Gioco in pausa!", "Arial", 24, Magenta, true);
+    Present();  // Mostra il messaggio di pausa
+
+    // Aspetta che l'utente prema 'P' per riprendere il gioco
+    while (LastKey() != 'p' && LastKey() != 'P') {
+        Wait(10); // Riduce il carico CPU durante l'attesa
+    }
+
+    Clear(Black);  // Rimuove il messaggio di pausa dal display
+    Present();     // Rende lo schermo pulito senza la pausa
+}
 void run() {
 
     Menu();
     // Imposto immagine sfondo
     const Image sfondo = LoadImage(sfondopng);
+
+    
 
     // Coordinate iniziali dell'astronave
     int x = 150;
@@ -81,6 +104,7 @@ void run() {
 
     srand(time(0)); // Inizializza il generatore di numeri casuali
 
+
     while (esecuzione) {
 
 
@@ -102,14 +126,14 @@ void run() {
         if (key == Up) y = y - 5;
         if (key == Down) y = y + 5;
 
-        // Incrementa il timer per i colpi
-        timerSparo++;
+        if (key == 'p' || key == 'P') {
+            Pause();
+        }
 
-        // Se premi spazio e il timer è passato
-        if (key == ' ' && py < 0 && timerSparo >= intervalloMinimoSparo) {
+        // Premi spazio per sparare
+        if (key == ' ' && py < 0) {
             px = x + 12;  // Parte dal centro dell'astronave
             py = y - 10;  // Leggermente sopra la posizione dell'astronave
-            timerSparo = 0; // Reset del timer dopo aver sparato
         }
 
 
@@ -204,18 +228,22 @@ void run() {
             DrawImage(px, py, proiettileImg); // Disegna l'immagine
         }
 
-        // Usa to_string per convertire il punteggio in stringa
-        string punteggioText = "Punti: " + to_string(punti);
+        //Uso c_str coverte la stringa in una array di caratteri
 
-        // Mostra il punteggio nell'angolo in alto a destra
-        DrawString(IMM2D_WIDTH - 40, 10, punteggioText.c_str(), "Arial", 10, White, true);
+        // Disegna i comandi nell'angolo in basso a destra
+        string comandi = "P - Pausa | Spazio - Sparare | Freccette - Movimento";
+        DrawString(IMM2D_WIDTH - 150, IMM2D_HEIGHT - 20, comandi.c_str(), "Arial",8, White, true);
+
+        // Usa to_string per convertire il punteggio in stringa
+        string punteggio = "Punti: " + to_string(punti);
+
+        // Mostra il punteggio nell'angolo in alto a destra 
+        DrawString(IMM2D_WIDTH - 40, 10, punteggio.c_str(), "Arial", 10, White, true);
 
         //Dichiarazione e inizializzazione
-        string gameOverText = "GAME OVER";
+        string gameOver = "GAME OVER";
 
-        // Posizione X centrale calcolata tenendo conto della lunghezza del testo
-        int xPos = (IMM2D_WIDTH - gameOverText.length() * 10) / 2;  // Ogni carattere è grande 10 pixel
-        int yPos = IMM2D_HEIGHT / 2;  // Posizione verticale al centro dello schermo
+       
 
         // Controlla se l'astronave è uscita dai limiti dello schermo
         if (x < 0 || x >= IMM2D_WIDTH || y < 0 || y >= IMM2D_HEIGHT) {
@@ -228,7 +256,7 @@ void run() {
             // Scrive "Hai perso"
             DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 3, "GAME OVER", "Arial", 24, Red, true);
             //Visualizza il punteggio in basso al centro
-             DrawString(IMM2D_WIDTH / 2 , IMM2D_HEIGHT -20, punteggioText.c_str(), "Arial", 10, White, true);
+             DrawString(IMM2D_WIDTH / 2 , IMM2D_HEIGHT -20, punteggio.c_str(), "Arial", 10, White, true);
 
             // Stampa il messaggio
             Present();
@@ -247,7 +275,7 @@ void run() {
                 // Scrive "Hai perso"
                 DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 3, "GAME OVER", "Arial", 24, Red, true);
                 //Visualizza il punteggio in basso al centro
-                DrawString(IMM2D_WIDTH / 2 , IMM2D_HEIGHT -20, punteggioText.c_str(), "Arial", 10, White, true);
+                DrawString(IMM2D_WIDTH / 2 , IMM2D_HEIGHT -20, punteggio.c_str(), "Arial", 10, White, true);
                 // Stampa il messaggio
                 Present();
             }

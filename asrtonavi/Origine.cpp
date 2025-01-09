@@ -42,7 +42,7 @@ void Menu() {
         DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT /3, "Benvenuto nel Gioco!", "Arial", 24, Magenta, true);
         DrawString(IMM2D_WIDTH /2, IMM2D_HEIGHT  /2, "Premi spazio per iniziare", "Arial", 18, Magenta, true);
 
-        // Presenta il contenuto sullo schermo
+       
         Present();
 
 
@@ -53,7 +53,7 @@ void Menu() {
             break; // Esci dal menu principale
         }
 
-        Wait(10); // Riduce il consumo di CPU
+        Wait(10); 
     }
 }
 void Pause(){
@@ -67,9 +67,9 @@ void Pause(){
     DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 3, "Gioco in pausa!", "Arial", 24, Magenta, true);
     Present();  // Mostra il messaggio di pausa
 
-    // Aspetta che l'utente prema 'P' per riprendere il gioco
+    // Aspetta che l'utente prema 'p' per riprendere il gioco
     while (LastKey() != 'p' && LastKey() != 'P') {
-        Wait(10); // Riduce il carico CPU durante l'attesa
+        Wait(10); 
     }
 
     Clear(Black);  // Rimuove il messaggio di pausa dal display
@@ -107,11 +107,20 @@ void run() {
 
 
         // Genera nuovi asteroidi casualmente
+        // 
+		//if che controlla se il numero di asteroidi è minore di 100 e se il numero casuale è divisibile per 30
         if (rand() % 30 == 0 && numeroAsteroidi < 100) {
+			// Genera un nuovo asteroide in una posizione casuale su x (asse orizzontale)
             asteroidiX[numeroAsteroidi] = rand() % IMM2D_WIDTH;
+			//genera l'asteroide in cima allo schermo
             asteroidiY[numeroAsteroidi] = 0;
+			// Genera un asteroide grande o piccolo casualmente
             asteroidiGrandi[numeroAsteroidi] = rand() % 2 == 0;
+			// Se l'asteroide è grande, usa l'immagine meteoritegrande, altrimenti usa l'immagine meteoritepiccolo
             asteroidiImg[numeroAsteroidi] = asteroidiGrandi[numeroAsteroidi] ? meteoritegrande : meteoritepiccolo;
+           
+
+
             viteAsteroidi[numeroAsteroidi] = asteroidiGrandi[numeroAsteroidi] ? 100 : 50;
             colpiRicevuti[numeroAsteroidi] = 0; // Inizializza i colpi ricevuti
             numeroAsteroidi++;
@@ -158,9 +167,9 @@ void run() {
                     dimensioneAsteroide = 10; // Asteroide piccolo
                 }
 
-                const int tolleranza = 3;  // Un margine di errore per rendere la collisione più permissiva
+				const int tolleranza = 3;  // è una specie di corpo per la quale l'astronave fa una collisione con l'asteroide
 
-                // Controllo della collisione tra proiettile e asteroide con tolleranza
+                // Controllo della collisione tra proiettile e asteroide 
                 if (px < asteroidiX[i] + dimensioneAsteroide + tolleranza && px + 5 > asteroidiX[i] - tolleranza &&
                     py < asteroidiY[i] + dimensioneAsteroide + tolleranza && py + 5 > asteroidiY[i] - tolleranza) {
 
@@ -249,7 +258,7 @@ void run() {
             // Cancella lo schermo
             Clear(Black);
 
-            // Scrive "Hai perso"
+            // sscritta per avere perso
             DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 3, "GAME OVER", "Arial", 24, Red, true);
             //Visualizza il punteggio in basso al centro
              DrawString(IMM2D_WIDTH / 2 , IMM2D_HEIGHT -20, punteggio.c_str(), "Arial", 10, White, true);
@@ -272,7 +281,7 @@ void run() {
                 DrawString(IMM2D_WIDTH / 2, IMM2D_HEIGHT / 3, "GAME OVER", "Arial", 24, Red, true);
                 //Visualizza il punteggio in basso al centro
                 DrawString(IMM2D_WIDTH / 2 , IMM2D_HEIGHT -20, punteggio.c_str(), "Arial", 10, White, true);
-                // Stampa il messaggio
+              
                 Present();
             }
         }
@@ -283,10 +292,15 @@ void run() {
         // Rimuovi gli asteroidi che sono usciti dallo schermo
         int nuovoNumeroAsteroidi = 0;
         for (int i = 0; i < numeroAsteroidi; i++) {
+			//if che controlla se l'asteroide è uscito dallo schermo
             if (asteroidiY[i] <= IMM2D_HEIGHT) {
+                //prende l'asteroide uscito dallo schermo e lo ributta in sopra lo schermo
                 asteroidiX[nuovoNumeroAsteroidi] = asteroidiX[i];
+				//reimposta la posizione dell'asse y
                 asteroidiY[nuovoNumeroAsteroidi] = asteroidiY[i];
+                //copia l'immagine dell'asteroide nella nuova posizione
                 asteroidiImg[nuovoNumeroAsteroidi] = asteroidiImg[i];
+                //copia la tipologia di asteroide
                 asteroidiGrandi[nuovoNumeroAsteroidi] = asteroidiGrandi[i];
                 nuovoNumeroAsteroidi++;
             }

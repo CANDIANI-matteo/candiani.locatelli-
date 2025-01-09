@@ -138,14 +138,17 @@ void run() {
         }
 
         // Premi spazio per sparare
-        if (key == ' ' && py < 0) {
-            px = x + 12;  // Parte dal centro dell'astronave
-            py = y - 10;  // Leggermente sopra la posizione dell'astronave
+        if (key == ' ' && py<0) {
+            px = x + 10; 
+            py = y - 10; 
+            
         }
 
 
         // Muove il proiettile verso l'alto
-        if (py >= 0) py -= 4;
+        if (py >= 0) {
+            py -= 5;
+        }
 
         //Cancella il proiettile quando esce dallo schermo
         if (px < 0 || py < 0 || px >= IMM2D_WIDTH || py >= IMM2D_HEIGHT) {
@@ -167,7 +170,7 @@ void run() {
                     dimensioneAsteroide = 10; // Asteroide piccolo
                 }
 
-				const int tolleranza = 3;  // è una specie di corpo per la quale l'astronave fa una collisione con l'asteroide
+				const int tolleranza = 3;  // Serve a rendere la collisione più permissiva e non sbagliare la rilevazione
 
                 // Controllo della collisione tra proiettile e asteroide 
                 if (px < asteroidiX[i] + dimensioneAsteroide + tolleranza && px + 5 > asteroidiX[i] - tolleranza &&
